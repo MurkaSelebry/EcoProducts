@@ -19,6 +19,7 @@ EcoProducts - бот для подбора подходящей по вашим 
 
 
 User Story Template: Как [тип клиента], [хочу то-то], [чтобы делать что-то]
+
 Участники: Резван Мурад, Бурцев Игорь, Слюсарь Игорь
 
 Ссылка на Notion (UserStory, Boards, Timelines etc.): https://www.notion.so/selebry/ecccae2b74574a5b877dc1892f19c668?v=812d57d08147433b80fc313943213b7e&pvs=4
