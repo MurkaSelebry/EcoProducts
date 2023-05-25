@@ -21,6 +21,7 @@ regular_products = {
     'Яйца': 25
 }
 
+
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -102,10 +103,9 @@ def handle_plan(message):
     button2 = types.KeyboardButton('Полгода')
     button3 = types.KeyboardButton('Год')
     back_button = types.KeyboardButton('Назад')
-    markup.add(button1,button2,button3,back_button)
+    markup.add(button1, button2, button3, back_button)
     bot.reply_to(message, "Выберите продолжительность плана или введите свою:", reply_markup=markup)
     bot.register_next_step_handler(message, process_plan_input)
-
 
 
 @bot.message_handler(func=lambda message: message.text == 'Хочу кушать')
