@@ -23,4 +23,14 @@ def info(message):
     bot.send_message(message.chat.id, '''Я умею подбирать продукты под ваше финансовое состояние''', parse_mode='html')
 
 
+@bot.message_handler(func=lambda message: message.text == 'Рацион питания')
+def handle_ration(message):
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton('Веганский')
+    button2 = types.KeyboardButton('Обычный')
+    back_button = types.KeyboardButton('Назад')
+    markup.add(button1, button2, back_button)
+    bot.reply_to(message, "Выберите рацион:", reply_markup=markup)
+
+
 bot.polling(none_stop=True)
