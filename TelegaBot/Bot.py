@@ -5,8 +5,21 @@ bot = telebot.TeleBot('5932020939:AAFC56lTYXkvbWdARlxKHlvP4fqlHn_-AoQ')
 
 product_prices = {}
 selected_stores = {}
-plan_durations = {}
-
+selected_plans = {}
+vegan_products = {
+    'Морковь': 10,
+    'Брокколи': 15,
+    'Овсянка': 20,
+    'Авокадо': 25,
+    'Тофу': 30
+}
+regular_products = {
+    'Курица': 50,
+    'Рис': 40,
+    'Гречка': 35,
+    'Молоко': 30,
+    'Яйца': 25
+}
 
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
@@ -41,6 +54,14 @@ def process_store_input(message):
     chat_id = message.chat.id
     selected_stores[chat_id] = store_name
     bot.reply_to(message, f"Вы выбрали магазин: {store_name}")
+
+
+# обработка выбранного плана после того как чел нажимает кнопку План
+def process_plan_input(message):
+    plan_duration = message.text
+    chat_id = message.chat.id
+    selected_plans[chat_id] = plan_duration
+    bot.reply_to(message, f"Вы выбрали продолжительность плана: {plan_duration}")
 
 
 @bot.message_handler(func=lambda message: message.text == 'Рацион питания')
@@ -80,10 +101,11 @@ def handle_plan(message):
     button1 = types.KeyboardButton('1 месяц')
     button2 = types.KeyboardButton('Полгода')
     button3 = types.KeyboardButton('Год')
-    button4 = types.KeyboardButton('Свое')
     back_button = types.KeyboardButton('Назад')
-    markup.add(button1, button2, button3, button4, back_button)
-    bot.reply_to(message, "Выберите продолжительность плана:", reply_markup=markup)
+    markup.add(button1,button2,button3,back_button)
+    bot.reply_to(message, "Выберите продолжительность плана или введите свою:", reply_markup=markup)
+    bot.register_next_step_handler(message, process_plan_input)
+
 
 
 @bot.message_handler(func=lambda message: message.text == 'Хочу кушать')
@@ -96,7 +118,20 @@ def handle_hungry(message):
     bot.reply_to(message, "Выберите рацион:", reply_markup=markup)
 
 
-# Обработчик кнопки "Назад"
+@bot.message_handler(func=lambda message: message.text == 'Веганский')
+def handle_vegan_ration(message):
+    bot.reply_to(message, "Продукты веганского рациона:")
+    for product, price in vegan_products.items():
+        bot.send_message(message.chat.id, f"{product} - {price} рублей")
+
+
+@bot.message_handler(func=lambda message: message.text == 'Обычный')
+def handle_regular_ration(message):
+    bot.reply_to(message, "Продукты обычного рациона:")
+    for product, price in regular_products.items():
+        bot.send_message(message.chat.id, f"{product} - {price} рублей")
+
+
 @bot.message_handler(func=lambda message: message.text == 'Назад')
 def handle_back(message):
     start(message)
