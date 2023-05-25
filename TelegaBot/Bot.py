@@ -5,6 +5,7 @@ bot = telebot.TeleBot('5932020939:AAFC56lTYXkvbWdARlxKHlvP4fqlHn_-AoQ')
 
 product_prices = {}
 selected_stores = {}
+plan_durations = {}
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -71,6 +72,34 @@ def handle_stores(message):
     markup.add(button1, button2, button3, button4, button5, button6, back_button)
     bot.reply_to(message, "Выберите название ближайшего к вам магазина:", reply_markup=markup)
     bot.register_next_step_handler(message, process_store_input)
+
+
+@bot.message_handler(func=lambda message: message.text == 'План')
+def handle_plan(message):
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton('1 месяц')
+    button2 = types.KeyboardButton('Полгода')
+    button3 = types.KeyboardButton('Год')
+    button4 = types.KeyboardButton('Свое')
+    back_button = types.KeyboardButton('Назад')
+    markup.add(button1, button2, button3, button4, back_button)
+    bot.reply_to(message, "Выберите продолжительность плана:", reply_markup=markup)
+
+
+@bot.message_handler(func=lambda message: message.text == 'Хочу кушать')
+def handle_hungry(message):
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton('Веганский')
+    button2 = types.KeyboardButton('Обычный')
+    back_button = types.KeyboardButton('Назад')
+    markup.add(button1, button2, back_button)
+    bot.reply_to(message, "Выберите рацион:", reply_markup=markup)
+
+
+# Обработчик кнопки "Назад"
+@bot.message_handler(func=lambda message: message.text == 'Назад')
+def handle_back(message):
+    start(message)
 
 
 bot.polling(none_stop=True)
