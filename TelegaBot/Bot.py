@@ -3,6 +3,9 @@ from telebot import types
 
 bot = telebot.TeleBot('5932020939:AAFC56lTYXkvbWdARlxKHlvP4fqlHn_-AoQ')
 
+product_prices = {}
+selected_stores = {}
+
 
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
@@ -23,6 +26,22 @@ def info(message):
     bot.send_message(message.chat.id, '''Я умею подбирать продукты под ваше финансовое состояние''', parse_mode='html')
 
 
+# обработка выбранного продукта после того как чел нажимает кнопку Цена
+def process_price_input(message):
+    product_name = message.text
+    chat_id = message.chat.id
+    product_prices[chat_id] = product_name
+    bot.reply_to(message, f"Вы выбрали продукт: {product_name}")
+
+
+# обработка выбранного магазина после того как чел нажимает кнопку Магазины
+def process_store_input(message):
+    store_name = message.text
+    chat_id = message.chat.id
+    selected_stores[chat_id] = store_name
+    bot.reply_to(message, f"Вы выбрали магазин: {store_name}")
+
+
 @bot.message_handler(func=lambda message: message.text == 'Рацион питания')
 def handle_ration(message):
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -31,6 +50,27 @@ def handle_ration(message):
     back_button = types.KeyboardButton('Назад')
     markup.add(button1, button2, back_button)
     bot.reply_to(message, "Выберите рацион:", reply_markup=markup)
+
+
+@bot.message_handler(func=lambda message: message.text == 'Цена')
+def handle_price(message):
+    bot.reply_to(message, "Введите название продукта цену которого вы хотите узнать:")
+    bot.register_next_step_handler(message, process_price_input)
+
+
+@bot.message_handler(func=lambda message: message.text == 'Магазины')
+def handle_stores(message):
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton('Евроспар')
+    button2 = types.KeyboardButton('АШАН')
+    button3 = types.KeyboardButton('Верный')
+    button4 = types.KeyboardButton('METRO')
+    button5 = types.KeyboardButton('Перекресток')
+    button6 = types.KeyboardButton('Пятерочка')
+    back_button = types.KeyboardButton('Назад')
+    markup.add(button1, button2, button3, button4, button5, button6, back_button)
+    bot.reply_to(message, "Выберите название ближайшего к вам магазина:", reply_markup=markup)
+    bot.register_next_step_handler(message, process_store_input)
 
 
 bot.polling(none_stop=True)
